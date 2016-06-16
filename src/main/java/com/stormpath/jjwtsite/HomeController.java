@@ -14,4 +14,9 @@ public class HomeController {
     public String home() {
         return "home";
     }
+
+    @RequestMapping("/jwtfun")
+    public String jwtFun() {
+        return "jwtfun";
+    }
 }

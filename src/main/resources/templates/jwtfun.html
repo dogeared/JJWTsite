@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="/css/jwt_style.css"/>
+        <link rel="stylesheet" href="/css/codemirror.css"/>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 box panel panel-default">
+                    <span class="red" id="access-token-header">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span><br/>
+                    .<br/>
+                    <span class="purple wrap" id="access-token-payload">eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9</span><br/>
+                    .<br/>
+                    <span class="blue" id="access-token-signature">TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</span>
+                </div>
+                <div class="col-md-5 col-md-offset-1 box panel panel-default">
+                    <div class="jwt-header">
+                        <textarea id="jwt-header"></textarea>
+                    </div>
+                    <div class="jwt-payload">
+                        <textarea id="jwt-payload"></textarea>
+                    </div>
+                    <div class="jwt-signature">
+                        Secret: <input type="text" id="secret" name="secret" size="30" value="secret"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 box panel panel-default">
+                    <div class="jwt-builder">
+                        <textarea id="jwt-builder"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-5 col-md-offset-1 box panel panel-default">
+                    <div class="jwt-parser">
+                        <textarea id="jwt-parser"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="/js/codemirror-compressed.js"></script>
+        <script>
+            var jwtHeaderTextArea = document.getElementById('jwt-header');
+            jwtHeader = CodeMirror.fromTextArea(jwtHeaderTextArea, {
+                lineNumbers: true,
+                matchBrackets: true,
+                smartIndent: true,
+            });
+            jwtHeader.getDoc().setValue('{\n\t"alg": "HS256",\n\t"typ": "JWT"\n}');
+            jwtHeader.setSize(450, 100);
+
+            var jwtPayloadTextArea = document.getElementById('jwt-payload');
+            jwtPayload = CodeMirror.fromTextArea(jwtPayloadTextArea, {
+                lineNumbers: true,
+                matchBrackets: true,
+                smartIndent: true
+            });
+            jwtPayload.getDoc().setValue('{\n\t"sub": "ME",\n\t"custom": "myCustom"\n\n\n}');
+            jwtPayload.setSize(450, 130);
+
+            var jwtBuilderTextArea = document.getElementById('jwt-builder');
+            jwtBuilder = CodeMirror.fromTextArea(jwtBuilderTextArea, {
+                lineNumbers: true,
+                matchBrackets: true,
+                smartIndent: true
+            });
+            jwtBuilder.getDoc().setValue('String jwtStr = Jwts.builder()\n\t.setSubject("ME")\n\t.claim("custom", "myCustom")\n\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\tsecret.getBytes("UTF-8")\n\t)\n\t.compact();');
+            jwtBuilder.setSize(450, 250);
+
+            var jwtParserTextArea = document.getElementById('jwt-parser');
+            jwtParser = CodeMirror.fromTextArea(jwtParserTextArea, {
+                lineNumbers: true,
+                matchBrackets: true,
+                smartIndent: true
+            });
+            jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.setSigningKey(\n\t\tsecret.getBytes("UTF-8")\n\t)\n\t.parse(jwtStr);');
+            jwtParser.setSize(450, 250);
+
+            jwtHeader.on('change', function() {
+                // need to update jwtBuilder, jwtParser and jwt sections
+                console.log("header changed");
+            });
+
+            jwtPayload.on('change', function() {
+                // need to update jwtBuilder, jwtParser and jwt sections
+                console.log("payload changed");
+            });
+
+            $('#secret').keypress(function() {
+                // need to update jwtBuilder, jwtParser and jwt sections
+                console.log("secret changed");
+            });
+        </script>
+    </body>
+</html>

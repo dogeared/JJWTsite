@@ -1,0 +1,46 @@
+body {
+    margin-top: 60px;
+}
+.box {
+    padding: 10px;
+    height: 300px;
+}
+.jwt-header {
+    height: 100px;
+    margin-bottom: 10px;
+}
+.jwt-payload {
+    height: 130px;
+    margin-bottom: 10px;
+}
+.jwt-signature {
+    height: 20px;
+    margin-bottom: 1px;
+}
+.jwt-builder {
+    height: 250px;
+}
+.jwt-parser {
+    height: 250px;
+}
+.stormpath-header {
+    background-color: #161616;
+}
+.left {
+    text-align: left;
+}
+.red {
+    color: red;
+}
+.blue {
+    color: blue;
+}
+.purple {
+    color: purple;
+}
+.wrap {
+    word-wrap: break-word;
+}
+.dn {
+    display: none;
+}
