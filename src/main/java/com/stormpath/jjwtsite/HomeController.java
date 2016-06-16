@@ -25,5 +25,8 @@ public class HomeController {
         return "jjwtdocs";
     }
 
-
+    @RequestMapping("/jwtfun")
+    public String jwtFun() {
+        return "jwtfun";
+    }
 }
