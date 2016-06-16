@@ -14,4 +14,16 @@ public class HomeController {
     public String home() {
         return "home";
     }
+
+    @RequestMapping("/jwt101")
+    public String jwt101() {
+        return "jwt101";
+    }
+
+    @RequestMapping("/jjwtdocs")
+    public String jjwtdocs() {
+        return "jjwtdocs";
+    }
+
+
 }
