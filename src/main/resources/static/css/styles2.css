@@ -50,7 +50,7 @@ header p.description {
     width: 730px;
     display: inline-block;
     color: rgba(255, 255, 255, 0.85);
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+    /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);*/
 }
 header .devtools {
     position: relative;
@@ -116,9 +116,9 @@ h1 {
     font-weight: 300;
     font-size: 34px;
     margin: 0;
-    padding-top: 200px;
+    padding-top: 100px;
     color: white;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+    /*text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);*/
 }
 h2 {
     font-size: 28px;
@@ -191,6 +191,23 @@ code {
     visibility: hidden;
 }
 
+.toplink {
+    top: 30px;
+    right: 0;
+    position: relative;
+    vertical-align: top;
+}
+.toplink > a.btn {
+    padding: 10px 10px;
+    padding-bottom: 9px;
+    border: none;
+    box-shadow: none;
+}
+.toplink > a.btn > i {
+    font-size: 12px;
+    vertical-align: top;
+}
+
 .logo,
 .logo:visited {
     position: absolute;
@@ -216,18 +233,18 @@ code {
     opacity: 1;
 }
 .logo .icon img {
-    width: 32px;
+    width: 100px;
 }
 .logo .icon .text {
     vertical-align: top;
     line-height: 20px;
-    padding-left: 10px;
+    padding-left: 8px;
     font-family: "Francois One";
     font-weight: 400;
 }
 .logo .credits {
     position: absolute;
-    left: 45px;
+    left: 111px;
     top: 19px;
     font-size: 11px;
     vertical-align: top;
@@ -249,7 +266,7 @@ code {
     padding: 10px 10px;
     padding-bottom: 9px;
     font-size: 9px;
-    border: none;
+    /*border: none;*/
     box-shadow: none;
 }
 .share > a.btn > i {
