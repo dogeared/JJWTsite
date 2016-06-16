@@ -1,27 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <title>JWT 101  - Java Jason Web Token</title>
+    <title>JJWT - JSON Web Token for Java and Android</title>
+    <meta charset="utf-8"/>
+    <meta name="description"
+          content="JJWT is an open source json web token library that enables any java application to create and verify access and refresh tokens. Learn more and see it in action here."/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, maximum-scale=1, width=device-width"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <meta property="og:title" content="JJWT - JSON Web Token for Java and Android"/>
+    <meta property="og:description"
+          content="JJWT is an open source json web token library that enables any java application to create and verify access and refresh tokens. Learn more and see it in action here."/>
+    <meta property="og:image" content=""/>
+    <meta property="og:image:secure_url"
+          content=""/>
+
+    <link rel="shortcut icon" type="image/png" href="img/icons/icon-32.png"/>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,100,300,700"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,500"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Francois+One"/>
+
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/styles2.css"/>
 </head>
 <body>
-<h2>Why Are JWTs Important?</h2>
-<p>They handle some of the problems with information passed from a client to a server. JWT allows the server to
+<header>
+    <div class="container">
+        <div class="logo">
+            <div class="icon">
+                <a href="/"><img src="/images/JJWTLogo.png"/></a>
+                <a href="/" class="text">JSON Web Tokens for Java and Android</a>
+            </div>
+            <div class="credits">
+                by
+                <a href="https://stormpath.com/" target="_blank"><img src="/images/stormpath-logo-white.png"/></a>
+            </div>
+        </div>
+        <div class="toplink">
+            <a href="jwt101.html" class="btn btn-alt">JWT 101</a>
+            <a href="jjwtdocs.html" class="btn btn-alt">Docs</a>
+        </div>
+
+        <div class="share">
+            <a href="https://twitter.com/intent/tweet?text=JJWT%3A+Open+Source+JWTs+for+Java+And+Android+Apps.+Check+it+out%3A+https%3A%2F%2Fgithub.com%2Fjwtk%2Fjjwt" target="_blank" rel="nofollow" class="btn btn-alt">
+                <i class="fa fa-twitter" aria-hidden="true"></i>
+                Share on Twitter
+            </a>
+        </div>
+
+        <h1>Open Source JWTs For Any Java App</h1>
+
+        <p class="description">
+            JJWT is the easiest library for creating and verifying JSON Web Tokens (JWTs) on the JVM.<br />
+            Just drop JJWT into any Java application. Check it out in action!
+        </p>
+
+        <p class="buttons">
+            <a href="https://github.com/jwtk/jjwt" target="_blank" rel="nofollow" class="btn btn-alt">
+                <i class="fa fa-github" aria-hidden="true"></i>
+                View on GitHub
+            </a>
+        </p>
+    </div>
+</header>
+<div class="bodytext">
+    <h2>Why Are JWTs Important?</h2>
+    <p>They handle some of the problems with information passed from a client to a server. JWT allows the server to
     verify the information contained in the JWT without necessarily storing state on the server. As a trend, we
     are seeing more and more SaaS products include JWT integrations as a feature or using JWT in their product directly.
     Stormpath has always followed secure best practices for JWTs, in several parts of our stack, so we want to share some
     best practices for using JWT the right way.</p>
-<p><span id="more-2505"></span></p>
-<h2>What Is A JWT?</h2>
-<p>Before we get started, let’s quickly look at what a JWT contains so we can clearly understand why these best practices
-    are important. In its most simple form, JWT has three distinct parts that are URL encoded for transport:</p>
-<ul>
-    <li><strong>Header:</strong> The header contains the metadata for the token and at a minimal contains the type of the signature and/or encryption algorithm</li>
-    <li><strong>Claims:</strong> The claims contains any information that you want signed</li>
-    <li><strong>JSON Web Signature (JWS):</strong> The headers and claims digitally signed using the algorithm in the specified in the header</li>
-</ul>
-<p>The header and claims are JSON that are base64 encoded for transport. The header, claims, and signature are appended together with a period character <code>.</code><br />
-    For example, if the header and claims are:</p>
-
+    <p><span id="more-2505"></span></p>
+    <h2>What Is A JWT?</h2>
+    <p>Before we get started, let’s quickly look at what a JWT contains so we can clearly understand why these best practices
+        are important. In its most simple form, JWT has three distinct parts that are URL encoded for transport:</p>
+    <ul>
+        <li><strong>Header:</strong> The header contains the metadata for the token and at a minimal contains the type of the signature and/or encryption algorithm</li>
+        <li><strong>Claims:</strong> The claims contains any information that you want signed</li>
+        <li><strong>JSON Web Signature (JWS):</strong> The headers and claims digitally signed using the algorithm in the specified in the header</li>
+    </ul>
+    <p>The header and claims are JSON that are base64 encoded for transport. The header, claims, and signature are appended together with a period character <code>.</code><br />
+        For example, if the header and claims are:</p>
+</div>
+<footer>
+    <div class="container">
+        <div class="copyright">
+            &copy; 2016 Stormpath
+        </div>
+        <div class="social">
+            <a href="https://twitter.com/gostormpath" target="_blank" rel="nofollow"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+            <a href="https://github.com/jwtk/jjwt" target="_blank" rel="nofollow"><i class="fa fa-github-alt" aria-hidden="true"></i></a>
+        </div>
+        <div class="love">
+            <a href="https://stormpath.com" target="_blank">
+                <span>Made with</span><i class="fa fa-heart heart" aria-hidden="true"></i><span>by Stormpath</span>
+            </a>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

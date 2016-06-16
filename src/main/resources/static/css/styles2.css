@@ -351,6 +351,13 @@ code {
     display: inline-block;
 }
 
+.bodytext {
+    overflow: hidden;
+    text-align: left;
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
 .browsers {
     margin: 0;
     padding: 0;
