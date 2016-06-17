@@ -28,7 +28,9 @@
     <link rel="stylesheet" href="css/font-awesome.min.css"/>
     <link rel="stylesheet" href="css/styles2.css"/>
 </head>
+
 <body>
+
 <header>
     <div class="container">
         <div class="logo">
@@ -70,25 +72,135 @@
         </p>
     </div>
 </header>
+
+
 <div class="bodytext">
-    <h2>Why Are JWTs Important?</h2>
-    <p>They handle some of the problems with information passed from a client to a server. JWT allows the server to
-    verify the information contained in the JWT without necessarily storing state on the server. As a trend, we
-    are seeing more and more SaaS products include JWT integrations as a feature or using JWT in their product directly.
-    Stormpath has always followed secure best practices for JWTs, in several parts of our stack, so we want to share some
-    best practices for using JWT the right way.</p>
-    <p><span id="more-2505"></span></p>
-    <h2>What Is A JWT?</h2>
-    <p>Before we get started, let’s quickly look at what a JWT contains so we can clearly understand why these best practices
-        are important. In its most simple form, JWT has three distinct parts that are URL encoded for transport:</p>
-    <ul>
-        <li><strong>Header:</strong> The header contains the metadata for the token and at a minimal contains the type of the signature and/or encryption algorithm</li>
-        <li><strong>Claims:</strong> The claims contains any information that you want signed</li>
-        <li><strong>JSON Web Signature (JWS):</strong> The headers and claims digitally signed using the algorithm in the specified in the header</li>
-    </ul>
-    <p>The header and claims are JSON that are base64 encoded for transport. The header, claims, and signature are appended together with a period character <code>.</code><br />
-        For example, if the header and claims are:</p>
+    <h2>   </h2>
+    <p>First, what is a JSON Web Token, or JWT (pronounced “jot”)? In a nutshell, a JWT is a secure and trustworthy standard for token authentication. JWTs allow you to digitally sign information (referred to as claims) with a signature and can be verified at a later time with a secret signing key. The spec is also designed with advanced features that help against CSRF, man-in-the-middle, and replay attacks.</p>
+
+    <h2>What is Token Authentication?</h2>
+
+    <p>The process by which an application confirms user identity is called authentication. Traditionally, applications persist user identity through session cookies which rely on session IDs stored server-side. In this structure, developers are forced to create session storage that is either unique and server-specific, or implemented as a completely separate session storage layer.</p>
+
+    <p>Token authentication is a more modern approach, designed solve problems server-side session IDs can’t. JWTs provide a structured way to declare who a user is and what they can access. The use of tokens in place of session IDs can lower your application’s server load, streamline permission management, and provide better tools for supporting a distributed or cloud-based infrastructure.</p>
+
+    <p>JWTs handle some of the problems with passing information from a client to a server. A JWT allows the server to verify the information contained in the token requiring the state to be stored on the server. Token authentication generates tokens for your users after they present verifiable credentials. The initial authentication could be by username/password credentials, API keys or even tokens from another service.</p>
+
+    <h2>Anatomy of a JWT</h2>
+    <p>If you encounter a token in the wild, it will look like this:
+        <pre><code>
+        dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk..."
+        </code>
+    </pre>
+        This is a Base64 encoded string. If you break it apart you’ll actually find three separate sections:
+     <pre>
+        <code>
+        eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9
+        .
+        eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFt
+        cGxlLmNvbS9pc19yb290Ijp0cnVlfQ
+        .
+        dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+        </code>
+        </pre>
+    </p>
+
+    <p>Line 1 is a header which describes the token. Lines 3 and 4 are the claims (sometimes called the payload) which contains the juicy bits, and Line 6 is the signature hash that can be used to verify the integrity of the token (if you have the secret key that was used to sign it).</p>
+
+    <p>When we decode the the claims we get this nice, tidy JSON object:
+        <pre>
+        <code>
+        {
+        "sub": "users/TzMUocMF4p",
+        "name": "Robert Token Man",
+        "scope": "self groups/admins",
+        "exp": "1300819380"
+        }
+        </code>
+        </pre>
+        The claims tell the application, at minimum:
+        <ul>
+            <li>Who this user is and the URI to their user resource (sub)</li>
+            <li>What this user can access with this token (scope)</li>
+            <li>When the token expires. Your application should use this when it verifies the token</li>
+        </ul>
+    </p>
+
+        <p>Because the token is signed with a secret key, the application can verify its signature and implicitly trust what is being claimed. </p>
+        <h2>What the Heck is OAuth?</h2>
+        <p>OAuth 2.0 is a set of protocols that can delegate authentication or provide authorization when interacting with another service. It is widely adopted across many mobile and web applications. Stormpath uses OAuth because it is an industry standard that can be leveraged by any compliant library, and we currently support three of OAuth’s most used grant types:  </p>
+        <ul>
+            <li>Password Grant Type: Provides the ability to get an Access Token based on a username and password</li>
+            <li>Refresh Grant Type: Provides the ability to generate another Access Token based on a special Refresh Token</li>
+            <li>Client Credentials Grant Type: Provides the ability to exchange an API Key for an Access Token. This is supported through Stormpath's API Key Management feature</li>
+        </ul>
+
+
+    <h3> Access and Refresh Tokens</h3>
+
+    <p>Also within the OAuth paradigm, there are two token types: Access and Refresh Tokens. When you first authenticate, your application (and thus your user), is given both tokens, but the Access Token is set to expire after a short period (this duration is under your control). Once the initial Access Token has expired, the Refresh Token will allow your application to obtain a new Access Token. Refresh Tokens have a set expiration, allowing for unlimited use up until that expiration point is reached. Both Access and Refresh Tokens have built-in security to prevent tampering and are only valid for a specific duration.</p>
+        <h2>Create and Validate JSON Web Tokens</h2>
+        <p>So, you’re sold on tokens, now, how do you use them in your application?</p>
+
+        <p>JJWT is a Java library providing end-to-end JSON Web Token creation and verification, developed by our CTO, Les Hazlewood. Forever free and open-source (Apache License, Version 2.0), it was designed with a builder-focused interface hiding most of its complexity. </p>
+        <h3>Creating</h3>
+        <p>Because of JJWT’s fluent interface, the creation of the JWT is basically a two-step process:</p>
+            <ol>
+                <li>The definition of the internal claims of the token, like Issuer, Subject, Expiration, ID and signing Key</li>
+                <li>The compaction of the JWT to a URL-safe string, according to the JWT Compact Serialization rules</li>
+            </ol>
+
+
+        <p>The final JWT will be a Base64 encoded string signed with the specified signature algorithm using the provided key. After this point, the token is ready to be shared with the other party. </p>
+        <h3>Validate The JWT</h3>
+        <p>Once you have a JWT, you typically deliver it back to the client that requested it. The client then stores it and passes the Access Token property in requests to your application. This is usually done with either a cookie value, or an authorization header in HTTP. For example:
+    <pre>
+    <code>
+        HTTP/1.1
+        GET /secure-resource
+        Host: https://yourapplication.com
+        Authorization: Bearer eyJraWQiOiIzMUUzRDZaM0xaMVdFSEJGWVRQRksxRzY4IiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiI2a3NjVFMyUjZuYlU3c1RhZ0h0aWFXIiwiaWF0IjoxNDQ1ODU0Njk0LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy8zUUlNbEpLS04yd2hHQ1l6WFh3MXQ4Iiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy8xeG15U0dLMXB5VVc1c25qOENvcmU1IiwiZXhwIjoxNDQ1ODU4Mjk0LCJydGkiOiI2a3NjVE9pTUNESVZWM05qVTIyUnlTIn0.VJyMOicMOdcOCtytsx4hoPHy3Hl3AfGNfi2ydy8AmG4
+        </code>
+    </pre>
+    </p>
+        <p>Validating the JWT allows you to verify its authenticity (by checking its digital signature you can check that it is not expired and verify that it hasn’t been tampered with) and get information about the user sending the token.</p>
+        <h3>Exceptions</h3>
+        <p>JJWT carries out a variety of validations while working with the JWT. All JJWT-related exceptions are <code>RuntimeExceptions</code>, with <code>JwtException</code> as the base class.</p>
+
+        <p>These errors cause specific exceptions to be thrown:</p>
+        <ul>
+            <li><code>ClaimJwtException</code>: thrown after a validation of a JTW claim failed</li>
+            <li><code>ExpiredJwtException</code>: indicating that a JWT was accepted after it expired and must be rejected</li>
+            <li><code>MalformedJwtException</code>: thrown when a JWT was not correctly constructed and should be rejected</li>
+            <li><code>PrematureJwtException</code>: indicates that a JWT was accepted before it is allowed to be accessed and must be rejected</li>
+            <li><code>SignatureException</code>: indicates that either calculating a signature or verifying an existing signature of a JWT failed</li>
+            <li><code>UnsupportedJwtException</code>: thrown when receiving a JWT in a particular format/configuration that does not match the format expected by the application. For example, this exception would be thrown if parsing an unsigned plaintext JWT when the application requires a cryptographically signed Claims JWS instead</li>
+        </ul>
+
+        <h2>Are Tokens Secure?</h2>
+        <p>The real question here is, are you using them securely? At Stormpath, we follow these best practices, and encourage our clients to do the same: </p>
+        <ul>
+            <li>Store your JWTs in secure, HTTPS-only cookies. This prevents Cross-Site Scripting XSS attacks.</li>
+            <li>Sign your tokens with a strong key that is available ONLY to the authentication service. Every time you use a token to authenticate a user, your server MUST verify that the token was signed with your secret key.</li>
+            <li>Encrypt your tokens if you have to put sensitive, non-opaque information in them. This is called JSON Web Encryption or JWE.</li>
+            <li>Secure the secret signing key used for calculating and verifying the signature. The secret signing key should only be accessible by the issuer and the consumer; it should not be accessible outside of these two parties.</li>
+            <li>Do not contain any sensitive data in a JWT. These tokens are usually signed to protect against manipulation (not encrypted) so the data in the claims can be easily decoded and read.</li>
+            </ul>
+
+            <h2>JJWT is Open Source</h2>
+        <p>JJWT is super easy to use and understand. If you need to create and verify JSON Web Tokens, it’s 100% the tool for you. And, like many libraries Stormpath supports, JJWT is completely free and open source (Apache License, Version 2.0), so everyone can see what it does and how it does it. Do not hesitate to report any issues, suggest improvements, and even submit some code!</p>
+
+        <!--<p>Looking to learn more about token authentication? We’ve got some great additional resources for you: </p>-->
+        <!--<ul>-->
+            <!--<li><a href="https://stormpath.com/blog/token-auth-spa">Token Authentication for Single Page Apps</a></li>-->
+            <!--<li><a href=”https://stormpath.com/blog/fun-with-java-spring-boot-token-management”>OAuth Token Management with Spring Boot and Stormpath</a></li>-->
+            <!--<li><a href=”https://stormpath.com/blog/token-auth-for-java”>Token Authentication for Java Applications</a></li>-->
+            <!--<li><a href=”https://stormpath.com/blog/build-secure-user-interfaces-using-jwts”>Build Secure User Interfaces with JSON Web Tokens</a></li>-->
+            <!--<li><a href=”https://stormpath.com/blog/oauth-is-not-sso”>OAuth is Not Single Sign-On</a></li>-->
+        <!--</ul>-->
 </div>
+
+
 <footer>
     <div class="container">
         <div class="copyright">
