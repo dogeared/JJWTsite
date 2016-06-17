@@ -133,21 +133,6 @@ function buildJavaJWTBuilderCode() {
 
 function doBuildJWT(jwtParts) {
 
-    // $.post("/buildJWT", jwtParts)
-    //     .done(function (response) {
-    //         // var jwt = response.jwt;
-    //         // var headerIdx = jwt.indexOf('.') + 1;
-    //         // var payloadIdx = jwt.lastIndexOf('.') + 1;
-    //         // var header = jwt.substring(0, headerIdx);
-    //         // var payload =  jwt.substring(headerIdx, payloadIdx);
-    //         // var signature = jwt.substring(payloadIdx);
-    //         //
-    //         // $('#jwt-header-encoded').html(header);
-    //         // $('#jwt-payload-encoded').html(payload);
-    //         // $('#jwt-signature-encoded').html(signature);
-    //         jwtEncoded.setValue(response.jwt);
-    //     });
-
     $.ajax({
         url: "buildJWT",
         method: "POST",
