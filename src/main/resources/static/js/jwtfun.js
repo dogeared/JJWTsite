@@ -14,7 +14,7 @@ $(document).ready(function () {
         lineNumbers: true,
         matchBrackets: true
     });
-    jwtPayload.getDoc().setValue('{\n\t"sub": "ME",\n\t"custom": "myCustom"\n\n\n}');
+    jwtPayload.getDoc().setValue('{\n\t"sub": "ME",\n\t"custom": "myCustom"\n}');
     jwtPayload.setSize(400, 130);
 
     var jwtBuilderTextArea = document.getElementById('jwt-builder');
@@ -47,6 +47,8 @@ $(document).ready(function () {
         // need to update jwtBuilder, jwtParser and jwt sections
         buildJavaJWTCode();
     });
+
+    $.blockUI.defaults.css.width = '70%';
 });
 
 function buildJavaJWTCode() {
@@ -61,7 +63,7 @@ function buildJavaJWTCode() {
         header = JSON.parse(headerStr);
     } catch (err) {
         // parse error is ok. user might just be in the middle of editing
-        blockJava();
+        blockJava('Fix yer JSON, Son!');
         return;
     }
 
@@ -69,7 +71,7 @@ function buildJavaJWTCode() {
         payload = JSON.parse(payloadStr);
     } catch (err) {
         // parse error is ok. user might just be in the middle of editing
-        blockJava();
+        blockJava('Fix yer JSON, Son!');
         return;
     }
 
@@ -94,9 +96,9 @@ function unblockJava() {
     $('#jwt-parser-div').unblock();
 }
 
-function blockJava() {
-    blockIfNotBlocked('#jwt-builder-div');
-    blockIfNotBlocked('#jwt-parser-div');
+function blockJava(msg) {
+    blockIfNotBlocked('#jwt-builder-div', msg);
+    blockIfNotBlocked('#jwt-parser-div', msg);
 }
 
 function isBlocked(elemId) {
@@ -104,10 +106,10 @@ function isBlocked(elemId) {
     return data["blockUI.isBlocked"] == 1;
 }
 
-function blockIfNotBlocked(elemId) {
+function blockIfNotBlocked(elemId, msg) {
     if (!isBlocked(elemId)) {
         $(elemId).block({
-            message: '<h4>Fix yer JSON, Son!</h4>',
+            message: '<h4>' + msg + '</h4>',
             css: { border: '3px solid #a00' }
         });
     }
@@ -116,19 +118,27 @@ function blockIfNotBlocked(elemId) {
 function composeClaim(key, val) {
 
     var standardClaims = {
-        'iss': 'setIssuer',
-        'sub': 'setSubject',
-        'aud': 'setAudience',
-        'exp': 'setExpiration',
-        'nbf': 'setNotBefore',
-        'iat': 'issuedAt',
-        'jti': 'setId'
+        'iss': { method: 'setIssuer', type: "string" },
+        'sub': { method: 'setSubject', type: "string" },
+        'aud': { method: 'setAudience', type: "string" },
+        'exp': { method: 'setExpiration', type: "number" },
+        'nbf': { method: 'setNotBefore', type: "number" },
+        'iat': { method: 'issuedAt', type: "number" },
+        'jti': { method: 'setId', type: "string" }
     };
 
     var setter = standardClaims[key];
+    var type = typeof val;
+    if (type === "string") {
+        val = '"' + val + '"'
+    }
     if (!setter) {
-        return '.claim("' + key + '","' + val + '")';
+        return '.claim("' + key + '", ' + val + ')';
     } else {
-        return '.' + setter + '("' + val + '")';
+        if (setter.type !== type) {
+            blockJava("'" + key + "' must be type: " + setter.type);
+            return;
+        }
+        return '.' + setter.method + '(' + val + ')';
     }
 }
