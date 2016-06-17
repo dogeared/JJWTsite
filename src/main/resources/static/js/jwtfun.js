@@ -5,7 +5,7 @@ $(document).ready(function () {
         lineNumbers: true,
         matchBrackets: true
     });
-    jwtHeader.getDoc().setValue('{\n\t"alg": "HS256",\n\t"typ": "JWT"\n}');
+    jwtHeader.getDoc().setValue('{\n\t"alg": "HS256"\n}');
     jwtHeader.setSize(430, 90);
 
     var jwtPayloadTextArea = document.getElementById('jwt-payload');
@@ -97,6 +97,8 @@ function buildJavaJWTBuilderCode() {
     var jwtParts = parseJWTJSON();
     if (!jwtParts) { return; }
 
+    doBuildJWT(jwtParts);
+
     var javaPreStr = 'String jwtStr = Jwts.builder()\n';
     var javaMiddle = '';
     var javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\t"' +
@@ -119,6 +121,23 @@ function buildJavaJWTBuilderCode() {
     }
 
     jwtParser.setValue(javaPreStr + javaMiddle + javaPostStr);
+}
+
+function doBuildJWT(jwtParts) {
+
+    $.post("/buildJWT", jwtParts)
+        .done(function (response) {
+            var jwt = response.jwt;
+            var headerIdx = jwt.indexOf('.') + 1;
+            var payloadIdx = jwt.lastIndexOf('.') + 1;
+            var header = jwt.substring(0, headerIdx);
+            var payload =  jwt.substring(headerIdx, payloadIdx);
+            var signature = jwt.substring(payloadIdx);
+    
+            $('#jwt-header-encoded').html(header);
+            $('#jwt-payload-encoded').html(payload);
+            $('#jwt-signature-encoded').html(signature);
+        })
 }
 
 function unblockJava() {

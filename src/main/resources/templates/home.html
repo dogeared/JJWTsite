@@ -76,12 +76,14 @@
         <div class="row">
             <div class="col-md-6 box panel panel-default">
                 <div class="panel-heading"><h3 class="panel-title">Encoded JWT</h3></div>
-                <div class="jwt-common">
-                    <span class="red" id="access-token-header">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span><br/>
-                    .<br/>
-                    <span class="purple wrap" id="access-token-payload">eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9</span><br/>
-                    .<br/>
-                    <span class="blue" id="access-token-signature">TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</span>
+                <div class="jwt-common" id="jwt-header-encoded">
+                    eyJhbGciOiJIUzI1NiJ9.
+                </div>
+                <div class="jwt-common" id="jwt-payload-encoded">
+                    eyJjdXN0b20iOiJteUN1c3RvbSIsInN1YiI6Ik1FIn0.
+                </div>
+                <div class="jwt-common" id="jwt-signature-encoded">
+                    -zjvjy84KOywU4yUS5un1V-5tkBtaMsqRJrmTc3xR5w
                 </div>
             </div>
             <div class="col-md-6 box panel panel-default">
