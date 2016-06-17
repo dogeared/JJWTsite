@@ -17,6 +17,29 @@ body {
     background: white;
 }
 
+.dropdown{
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.dropdown a:visited,
+.dropdown a:hover,
+.dropdown a:active,
+.dropdown a:focus {
+    color: inherit;
+    text-decoration: none;
+}
+
+.dropdown-menu {
+    color: #000000;
+    font-size: 12px;
+}
+
+.dropdownlisttext {
+    padding-left: 20px;
+    color: #000000;
+    font-size: 11px;
+}
+
 header,
 section,
 footer {
@@ -49,6 +72,7 @@ header p.description {
     width: 730px;
     display: inline-block;
     color: rgba(255, 255, 255, 0.85);
+    padding-top: 20px;
     /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);*/
 }
 header .devtools {
@@ -63,7 +87,7 @@ header .devtools-shadow {
     left: -100px;
     right: -100px;
     top: -100px;
-    height: 111px;
+    height: 111px;a
     padding: 100px;
     border-radius: 5px;
     overflow: hidden;
@@ -114,7 +138,7 @@ h1 {
     font-weight: 300;
     font-size: 34px;
     margin: 0;
-    padding-top: 100px;
+    padding-top: 120px;
     color: white;
     /*text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);*/
 }
@@ -190,9 +214,9 @@ code {
 }
 
 .toplink {
-    top: 30px;
-    right: 0;
-    position: relative;
+    top: 35px;
+    position: absolute;
+    padding-left: 40%;
     vertical-align: top;
 }
 .toplink > a.btn {

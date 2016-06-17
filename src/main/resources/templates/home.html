@@ -30,13 +30,14 @@
     <link rel="stylesheet" href="css/font-awesome.min.css"/>
     <link rel="stylesheet" href="css/styles2.css"/>
 </head>
+
 <body>
 <header>
     <div class="container">
         <div class="logo">
             <div class="icon">
                 <a href="/"><img src="/images/JJWTLogo.png"/></a>
-                <a href="/" class="text" style="font-size: 160%">JSON Web Tokens for Java and Android</a>
+                <a href="/" class="text">JSON Web Tokens for Java and Android</a>
             </div>
             <div class="credits">
                 by
@@ -44,10 +45,18 @@
             </div>
         </div>
         <div class="toplink">
-            <a href="jwt101.html" class="btn btn-alt">JWT 101</a>
-            <a href="jjwtdocs.html" class="btn btn-alt">Docs</a>
+            <div class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="jjwtdocs.html">JJWT Docs</a></li>
+                    <li role="separator" class="divider"></li>
+                    <p class="dropdownlisttext"> More From Stormpath</p>
+                    <li><a href="https://www.jsonwebtoken.io/">JSONWebToken.io</a></li>
+                    <li><a href="https://www.jwtinspector.io/">JWT Inspector</a></li>
+                    <li><a href="jwt101.html">JWT101</a></li>
+                </ul>
+            </div>
         </div>
-
         <div class="share">
             <a href="https://twitter.com/intent/tweet?text=JJWT%3A+Open+Source+JWTs+for+Java+And+Android+Apps.+Check+it+out%3A+https%3A%2F%2Fgithub.com%2Fjwtk%2Fjjwt" target="_blank" rel="nofollow" class="btn btn-alt">
                 <i class="fa fa-twitter" aria-hidden="true"></i>
