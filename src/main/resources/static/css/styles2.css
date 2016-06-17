@@ -21,6 +21,10 @@ body {
     color: rgba(255, 255, 255, 0.8);
 }
 
+.dropdown-toggle{
+    font-size: 14px;
+}
+
 .dropdown a:visited,
 .dropdown a:hover,
 .dropdown a:active,
@@ -216,9 +220,10 @@ code {
 .toplink {
     top: 35px;
     position: absolute;
-    padding-left: 40%;
+    margin-left: 40%;
     vertical-align: top;
 }
+
 .toplink > a.btn {
     padding: 10px 10px;
     padding-bottom: 9px;
