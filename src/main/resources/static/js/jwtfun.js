@@ -30,28 +30,28 @@ $(document).ready(function () {
         lineNumbers: true,
         matchBrackets: true
     });
-    jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.setSigningKey("secret".getBytes("UTF-8"))\n\t.parse(jwtStr);');
+    jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.requireSubject("ME")\n\t.require("custom", "myCustom")\n\t.setSigningKey("secret".getBytes("UTF-8"))\n\t.parse(jwtStr);');
     jwtParser.setSize(430, 250);
 
     jwtHeader.on('change', function() {
         // need to update jwtBuilder, jwtParser and jwt sections
-        buildJavaJWTCode();
+        buildJavaJWTBuilderCode();
     });
 
     jwtPayload.on('change', function() {
         // need to update jwtBuilder, jwtParser and jwt sections
-        buildJavaJWTCode();
+        buildJavaJWTBuilderCode();
     });
 
     $('#secret').keyup(function() {
         // need to update jwtBuilder, jwtParser and jwt sections
-        buildJavaJWTCode();
+        buildJavaJWTBuilderCode();
     });
 
     $.blockUI.defaults.css.width = '70%';
 });
 
-function buildJavaJWTCode() {
+function parseJWTJSON() {
     var headerStr = jwtHeader.getValue();
     var payloadStr = jwtPayload.getValue();
     var secret = $('#secret').val();
@@ -75,30 +75,44 @@ function buildJavaJWTCode() {
         return;
     }
 
-    unblockJava();
-
-    var javaPreStr = 'String jwtStr = Jwts.builder()\n';
-    var javaMiddle = '';
-    var secret = $('#secret').val();
-
     if (!secret) {
         blockJava('Fix yer secret, Son!');
         return;
     }
 
-    var javaPostStr = 
-        '\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\t"' +
-        secret + 
-        '".getBytes("UTF-8")\n\t)\n\t.compact();';
+    unblockJava();
 
-    // deal with header
+    return {
+        header: header,
+        payload: payload,
+        secret: secret
+    }
+}
 
-    // deal with payload
-    _.each(payload, function (val, key) {
-       javaMiddle += '\t' + composeClaim(key, val) + '\n';
+function buildJavaJWTBuilderCode() {
+    var jwtParts = parseJWTJSON();
+    if (!jwtParts) { return; }
+
+    var javaPreStr = 'String jwtStr = Jwts.builder()\n';
+    var javaMiddle = '';
+    var javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\t"' +
+        jwtParts.secret + '".getBytes("UTF-8")\n\t)\n\t.compact();';
+
+    _.each(jwtParts.payload, function (val, key) {
+       javaMiddle += '\t' + composeClaim('set', key, val) + '\n';
     });
 
     jwtBuilder.setValue(javaPreStr + javaMiddle + javaPostStr);
+
+    javaPreStr = 'Jwt jwt = Jwts.parser()\n';
+    javaMiddle = '';
+    javaPostStr = '\t.setSigningKey("' + jwtParts.secret + '".getBytes("UTF-8"))\n\t.parse(jwtStr);';
+
+    _.each(jwtParts.payload, function (val, key) {
+        javaMiddle += '\t' + composeClaim('require', key, val) + '\n';
+    });
+
+    jwtParser.setValue(javaPreStr + javaMiddle + javaPostStr);
 }
 
 function unblockJava() {
@@ -125,29 +139,35 @@ function blockIfNotBlocked(elemId, msg) {
     }
 }
 
-function composeClaim(key, val) {
+function composeClaim(pre, key, val) {
 
     var standardClaims = {
-        'iss': { method: 'setIssuer', type: "string" },
-        'sub': { method: 'setSubject', type: "string" },
-        'aud': { method: 'setAudience', type: "string" },
-        'exp': { method: 'setExpiration', type: "number" },
-        'nbf': { method: 'setNotBefore', type: "number" },
-        'iat': { method: 'issuedAt', type: "number" },
-        'jti': { method: 'setId', type: "string" }
+        'iss': { method: 'Issuer', type: "string" },
+        'sub': { method: 'Subject', type: "string" },
+        'aud': { method: 'Audience', type: "string" },
+        'exp': { method: 'Expiration', type: "number" },
+        'nbf': { method: 'NotBefore', type: "number" },
+        'iat': { method: 'IssuedAt', type: "number" },
+        'jti': { method: 'Id', type: "string" }
     };
 
     var setter = standardClaims[key];
     var type = typeof val;
     if (type === "string") {
-        val = '"' + val + '"'
+        val = '"' + val + '"';
+    } else if (type === "number") {
+        val = 'new Date(' + val + ')';
     }
 
     if (!setter) {
-        return '.claim("' + key + '", ' + val + ')';
+        var method = 'require';
+        if (pre === 'set') {
+            method = 'claim';
+        }
+        return '.' + method + '("' + key + '", ' + val + ')';
     } else if (setter.type !== type) {
         blockJava("'" + key + "' must be type: " + setter.type);
     } else {
-        return '.' + setter.method + '(' + val + ')';
+        return '.' + pre + setter.method + '(' + val + ')';
     }
 }
