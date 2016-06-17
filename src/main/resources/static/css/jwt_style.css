@@ -5,17 +5,18 @@ body {
     padding: 10px;
     height: 300px;
 }
+.jwt-common {
+    margin-bottom: 10px;
+    text-align: left;
+}
 .jwt-header {
     height: 100px;
-    margin-bottom: 10px;
 }
 .jwt-payload {
     height: 130px;
-    margin-bottom: 10px;
 }
 .jwt-signature {
     height: 20px;
-    margin-bottom: 1px;
 }
 .jwt-builder {
     height: 250px;

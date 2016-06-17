@@ -6,7 +6,7 @@ $(document).ready(function () {
         matchBrackets: true
     });
     jwtHeader.getDoc().setValue('{\n\t"alg": "HS256",\n\t"typ": "JWT"\n}');
-    jwtHeader.setSize(450, 100);
+    jwtHeader.setSize(400, 100);
 
     var jwtPayloadTextArea = document.getElementById('jwt-payload');
     jwtPayload = CodeMirror.fromTextArea(jwtPayloadTextArea, {
@@ -15,7 +15,7 @@ $(document).ready(function () {
         matchBrackets: true
     });
     jwtPayload.getDoc().setValue('{\n\t"sub": "ME",\n\t"custom": "myCustom"\n\n\n}');
-    jwtPayload.setSize(450, 130);
+    jwtPayload.setSize(400, 130);
 
     var jwtBuilderTextArea = document.getElementById('jwt-builder');
     jwtBuilder = CodeMirror.fromTextArea(jwtBuilderTextArea, {
@@ -23,7 +23,7 @@ $(document).ready(function () {
         matchBrackets: true
     });
     jwtBuilder.getDoc().setValue('String jwtStr = Jwts.builder()\n\t.setSubject("ME")\n\t.claim("custom", "myCustom")\n\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\tsecret.getBytes("UTF-8")\n\t)\n\t.compact();');
-    jwtBuilder.setSize(450, 250);
+    jwtBuilder.setSize(400, 250);
 
     var jwtParserTextArea = document.getElementById('jwt-parser');
     jwtParser = CodeMirror.fromTextArea(jwtParserTextArea, {
@@ -31,7 +31,7 @@ $(document).ready(function () {
         matchBrackets: true
     });
     jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.setSigningKey(secret.getBytes("UTF-8"))\n\t.parse(jwtStr);');
-    jwtParser.setSize(450, 250);
+    jwtParser.setSize(400, 250);
 
     jwtHeader.on('change', function() {
         // need to update jwtBuilder, jwtParser and jwt sections

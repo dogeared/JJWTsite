@@ -71,18 +71,40 @@
     </div>
 </header>
 <section id="section-1" class="section-bg">
-    <div class="container feature left">
-        <h2>Check it out in action</h2>
-        <!-- Spot For Micah's stuff -->
+    <h2>Try it Out:</h2>
+    <div class="container">
         <div class="row">
-            <div class="col-xs-6">JWT Goes Here</div>
-            <div class="col-xs-6">JSON Goes Here</div>
+            <div class="col-md-6 box panel panel-default">
+                <span class="red" id="access-token-header">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span><br/>
+                .<br/>
+                <span class="purple wrap" id="access-token-payload">eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9</span><br/>
+                .<br/>
+                <span class="blue" id="access-token-signature">TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</span>
+            </div>
+            <div class="col-md-6 box panel panel-default">
+                <div class="jwt-header jwt-common">
+                    <textarea id="jwt-header"></textarea>
+                </div>
+                <div class="jwt-payload jwt-common">
+                    <textarea id="jwt-payload"></textarea>
+                </div>
+                <div class="jwt-signature jwt-common">
+                    Secret: <input type="text" id="secret" name="secret" size="30" value="secret"/>
+                </div>
+            </div>
         </div>
         <div class="row">
-            <div class="col-xs-6">Create Code Goes here</div>
-            <div class="col-xs-6">Parser Code Goes Here</div>
+            <div id="jwt-builder-div" class="col-md-6 box panel panel-default">
+                <div class="jwt-builder jwt-common">
+                    <textarea id="jwt-builder"></textarea>
+                </div>
+            </div>
+            <div id="jwt-parser-div" class="col-md-6 box panel panel-default">
+                <div class="jwt-parser jwt-common">
+                    <textarea id="jwt-parser"></textarea>
+                </div>
+            </div>
         </div>
-        <!-- END Spot For Micah's stuff -->
     </div>
 </section>
 <footer>
@@ -104,7 +126,10 @@
 
 <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+<script src="/js/jquery.blockUI.js"></script>
 <script src="/js/codemirror-compressed.js"></script>
+<script src="/js/jwtfun.js"></script>
 
 </body>
 </html>
