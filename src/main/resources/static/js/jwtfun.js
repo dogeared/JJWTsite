@@ -6,7 +6,7 @@ $(document).ready(function () {
         matchBrackets: true
     });
     jwtHeader.getDoc().setValue('{\n\t"alg": "HS256",\n\t"typ": "JWT"\n}');
-    jwtHeader.setSize(400, 100);
+    jwtHeader.setSize(430, 100);
 
     var jwtPayloadTextArea = document.getElementById('jwt-payload');
     jwtPayload = CodeMirror.fromTextArea(jwtPayloadTextArea, {
@@ -15,23 +15,23 @@ $(document).ready(function () {
         matchBrackets: true
     });
     jwtPayload.getDoc().setValue('{\n\t"sub": "ME",\n\t"custom": "myCustom"\n}');
-    jwtPayload.setSize(400, 130);
+    jwtPayload.setSize(430, 130);
 
     var jwtBuilderTextArea = document.getElementById('jwt-builder');
     jwtBuilder = CodeMirror.fromTextArea(jwtBuilderTextArea, {
         lineNumbers: true,
         matchBrackets: true
     });
-    jwtBuilder.getDoc().setValue('String jwtStr = Jwts.builder()\n\t.setSubject("ME")\n\t.claim("custom", "myCustom")\n\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\tsecret.getBytes("UTF-8")\n\t)\n\t.compact();');
-    jwtBuilder.setSize(400, 250);
+    jwtBuilder.getDoc().setValue('String jwtStr = Jwts.builder()\n\t.setSubject("ME")\n\t.claim("custom", "myCustom")\n\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\t"secret".getBytes("UTF-8")\n\t)\n\t.compact();');
+    jwtBuilder.setSize(430, 250);
 
     var jwtParserTextArea = document.getElementById('jwt-parser');
     jwtParser = CodeMirror.fromTextArea(jwtParserTextArea, {
         lineNumbers: true,
         matchBrackets: true
     });
-    jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.setSigningKey(secret.getBytes("UTF-8"))\n\t.parse(jwtStr);');
-    jwtParser.setSize(400, 250);
+    jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.setSigningKey("secret".getBytes("UTF-8"))\n\t.parse(jwtStr);');
+    jwtParser.setSize(430, 250);
 
     jwtHeader.on('change', function() {
         // need to update jwtBuilder, jwtParser and jwt sections
@@ -43,7 +43,7 @@ $(document).ready(function () {
         buildJavaJWTCode();
     });
 
-    $('#secret').keypress(function() {
+    $('#secret').keyup(function() {
         // need to update jwtBuilder, jwtParser and jwt sections
         buildJavaJWTCode();
     });
@@ -79,7 +79,17 @@ function buildJavaJWTCode() {
 
     var javaPreStr = 'String jwtStr = Jwts.builder()\n';
     var javaMiddle = '';
-    var javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\tsecret.getBytes("UTF-8")\n\t)\n\tcompact()';
+    var secret = $('#secret').val();
+
+    if (!secret) {
+        blockJava('Fix yer secret, Son!');
+        return;
+    }
+
+    var javaPostStr = 
+        '\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\t"' +
+        secret + 
+        '".getBytes("UTF-8")\n\t)\n\t.compact();';
 
     // deal with header
 
@@ -132,13 +142,12 @@ function composeClaim(key, val) {
     if (type === "string") {
         val = '"' + val + '"'
     }
+
     if (!setter) {
         return '.claim("' + key + '", ' + val + ')';
+    } else if (setter.type !== type) {
+        blockJava("'" + key + "' must be type: " + setter.type);
     } else {
-        if (setter.type !== type) {
-            blockJava("'" + key + "' must be type: " + setter.type);
-            return;
-        }
         return '.' + setter.method + '(' + val + ')';
     }
 }
