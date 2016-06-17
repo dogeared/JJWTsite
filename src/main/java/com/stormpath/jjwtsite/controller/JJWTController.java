@@ -5,7 +5,9 @@ import com.stormpath.jjwtsite.model.JWTPartsRequest;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
@@ -14,7 +16,7 @@ import java.util.Date;
 public class JJWTController {
 
     @RequestMapping("/buildJWT")
-    public JWTBuilderResponse buildJWT(JWTPartsRequest request) throws Exception {
+    public @ResponseBody JWTBuilderResponse buildJWT(@RequestBody JWTPartsRequest request) throws Exception {
 
         JwtBuilder builder = Jwts.builder();
 
@@ -30,13 +32,13 @@ public class JJWTController {
                     builder.setAudience((String)request.getPayload().get("aud"));
                     break;
                 case "exp":
-                    builder.setExpiration(new Date(Long.valueOf((String)request.getPayload().get("exp"))));
+                    builder.setExpiration(new Date(new Long(request.getPayload().get("exp").toString()) * 1000));
                     break;
                 case "nbf":
-                    builder.setNotBefore(new Date(Long.valueOf((String)request.getPayload().get("nbf"))));
+                    builder.setNotBefore(new Date(new Long(request.getPayload().get("nbf").toString()) * 1000));
                     break;
                 case "iat":
-                    builder.setIssuedAt(new Date(Long.valueOf((String)request.getPayload().get("iat"))));
+                    builder.setIssuedAt(new Date(new Long(request.getPayload().get("iat").toString()) * 1000));
                     break;
                 case "jti":
                     builder.setId((String)request.getPayload().get("jti"));

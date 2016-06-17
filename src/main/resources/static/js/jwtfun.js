@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    var jwtEncodedTextArea = document.getElementById('jwt-encoded');
+    jwtEncoded = CodeMirror.fromTextArea(jwtEncodedTextArea, {
+        mode: 'application/json',
+        lineWrapping: true
+    });
+    jwtEncoded.getDoc().setValue("eyJhbGciOiJIUzI1NiJ9.eyJjdXN0b20iOiJteUN1c3RvbSIsInN1YiI6Ik1FIn0.-zjvjy84KOywU4yUS5un1V-5tkBtaMsqRJrmTc3xR5w");
+    jwtEncoded.setSize(430, 250);
+
     var jwtHeaderTextArea = document.getElementById('jwt-header');
     jwtHeader = CodeMirror.fromTextArea(jwtHeaderTextArea, {
         mode: 'application/json',
@@ -125,19 +133,34 @@ function buildJavaJWTBuilderCode() {
 
 function doBuildJWT(jwtParts) {
 
-    $.post("/buildJWT", jwtParts)
-        .done(function (response) {
-            var jwt = response.jwt;
-            var headerIdx = jwt.indexOf('.') + 1;
-            var payloadIdx = jwt.lastIndexOf('.') + 1;
-            var header = jwt.substring(0, headerIdx);
-            var payload =  jwt.substring(headerIdx, payloadIdx);
-            var signature = jwt.substring(payloadIdx);
-    
-            $('#jwt-header-encoded').html(header);
-            $('#jwt-payload-encoded').html(payload);
-            $('#jwt-signature-encoded').html(signature);
-        })
+    // $.post("/buildJWT", jwtParts)
+    //     .done(function (response) {
+    //         // var jwt = response.jwt;
+    //         // var headerIdx = jwt.indexOf('.') + 1;
+    //         // var payloadIdx = jwt.lastIndexOf('.') + 1;
+    //         // var header = jwt.substring(0, headerIdx);
+    //         // var payload =  jwt.substring(headerIdx, payloadIdx);
+    //         // var signature = jwt.substring(payloadIdx);
+    //         //
+    //         // $('#jwt-header-encoded').html(header);
+    //         // $('#jwt-payload-encoded').html(payload);
+    //         // $('#jwt-signature-encoded').html(signature);
+    //         jwtEncoded.setValue(response.jwt);
+    //     });
+
+    $.ajax({
+        url: "buildJWT",
+        method: "POST",
+        data: JSON.stringify(jwtParts),
+        dataType: 'json',
+        contentType: "application/json",
+        success: function (response, status, jqXHR) {
+            jwtEncoded.setValue(response.jwt);
+        },
+        error: function (jqXHR, textStatus, errorThrown){
+            //Do something
+        }
+    });
 }
 
 function unblockJava() {
