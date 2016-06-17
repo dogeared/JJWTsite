@@ -6,7 +6,7 @@ $(document).ready(function () {
         matchBrackets: true
     });
     jwtHeader.getDoc().setValue('{\n\t"alg": "HS256",\n\t"typ": "JWT"\n}');
-    jwtHeader.setSize(430, 100);
+    jwtHeader.setSize(430, 90);
 
     var jwtPayloadTextArea = document.getElementById('jwt-payload');
     jwtPayload = CodeMirror.fromTextArea(jwtPayloadTextArea, {
@@ -15,7 +15,7 @@ $(document).ready(function () {
         matchBrackets: true
     });
     jwtPayload.getDoc().setValue('{\n\t"sub": "ME",\n\t"custom": "myCustom"\n}');
-    jwtPayload.setSize(430, 130);
+    jwtPayload.setSize(430, 120);
 
     var jwtBuilderTextArea = document.getElementById('jwt-builder');
     jwtBuilder = CodeMirror.fromTextArea(jwtBuilderTextArea, {
@@ -30,21 +30,25 @@ $(document).ready(function () {
         lineNumbers: true,
         matchBrackets: true
     });
-    jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.requireSubject("ME")\n\t.require("custom", "myCustom")\n\t.setSigningKey("secret".getBytes("UTF-8"))\n\t.parse(jwtStr);');
+    jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.requireSubject("ME")\n\t.require("custom", "myCustom")\n\t.setSigningKey(\n\t\t"secret".getBytes("UTF-8")\n\t)\n\t.parse(jwtStr);');
     jwtParser.setSize(430, 250);
 
-    jwtHeader.on('change', function() {
+    jwtHeader.on('change', function () {
         // need to update jwtBuilder, jwtParser and jwt sections
         buildJavaJWTBuilderCode();
     });
 
-    jwtPayload.on('change', function() {
+    jwtPayload.on('change', function () {
         // need to update jwtBuilder, jwtParser and jwt sections
         buildJavaJWTBuilderCode();
     });
 
-    $('#secret').keyup(function() {
+    $('#secret').keyup(function () {
         // need to update jwtBuilder, jwtParser and jwt sections
+        buildJavaJWTBuilderCode();
+    });
+
+    $('#require_claims').click(function () {
         buildJavaJWTBuilderCode();
     });
 
@@ -106,11 +110,13 @@ function buildJavaJWTBuilderCode() {
 
     javaPreStr = 'Jwt jwt = Jwts.parser()\n';
     javaMiddle = '';
-    javaPostStr = '\t.setSigningKey("' + jwtParts.secret + '".getBytes("UTF-8"))\n\t.parse(jwtStr);';
+    javaPostStr = '\t.setSigningKey(\n\t\t"' + jwtParts.secret + '".getBytes("UTF-8")\n\t)\n\t.parse(jwtStr);';
 
-    _.each(jwtParts.payload, function (val, key) {
-        javaMiddle += '\t' + composeClaim('require', key, val) + '\n';
-    });
+    if ($('#require_claims').prop("checked") == true) {
+        _.each(jwtParts.payload, function (val, key) {
+            javaMiddle += '\t' + composeClaim('require', key, val) + '\n';
+        });
+    }
 
     jwtParser.setValue(javaPreStr + javaMiddle + javaPostStr);
 }
