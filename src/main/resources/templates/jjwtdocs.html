@@ -24,8 +24,16 @@
 
     <link rel="stylesheet" href="css/font-awesome.min.css"/>
     <link rel="stylesheet" href="css/styles2.css"/>
+
+
+    <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v0.2.0/build/zero-md.html"/>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/zerodevx/zero-md/v0.2.0/markdown-themes/default.css"/>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/zerodevx/zero-md/v0.2.0/highlight-themes/default.css"/>
+    <!--<link rel="import" href="bower_components/zero-md/zero-md.html"/>-->
+
 </head>
 <body>
+
 <header>
     <div class="container">
         <div class="logo">
@@ -52,9 +60,20 @@
         <h1>JJWT Documentation</h1>
     </div>
 </header>
+
+<style>
+    .md-html { min-width: 200px; max-width: 790px; margin: 56px auto 0 auto; padding: 20px; }
+</style>
+
+<!--GitHub ReadMe Slurp-->
+
 <div class="bodytext">
-    <p>Some Stuff on JJWT</p>
-    </div>
+    <zero-md file="https://raw.githubusercontent.com/jwtk/jjwt/master/README.md">
+        <div class="md-html"></div>
+    </zero-md>
+</div>
+
+
 <footer>
     <div class="container">
         <div class="copyright">
@@ -64,6 +83,9 @@
             <a href="https://twitter.com/gostormpath" target="_blank" rel="nofollow"><i class="fa fa-twitter" aria-hidden="true"></i></a>
             <a href="https://github.com/jwtk/jjwt" target="_blank" rel="nofollow"><i class="fa fa-github-alt" aria-hidden="true"></i></a>
         </div>
+        <div>
+        </div>
+
         <div class="love">
             <a href="https://stormpath.com" target="_blank">
                 <span>Made with</span><i class="fa fa-heart heart" aria-hidden="true"></i><span>by Stormpath</span>
@@ -71,5 +93,8 @@
         </div>
     </div>
 </footer>
+
+<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
 </body>
 </html>
