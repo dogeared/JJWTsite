@@ -30,13 +30,14 @@
     <link rel="stylesheet" href="/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="/css/styles2.css"/>
 </head>
+
 <body>
 <header>
     <div class="container">
         <div class="logo">
             <div class="icon">
                 <a href="/"><img src="/images/JJWTLogo.png"/></a>
-                <a href="/" class="text" style="font-size: 160%">JSON Web Tokens for Java and Android</a>
+                <a href="/" class="text">JSON Web Tokens for Java and Android</a>
             </div>
             <div class="credits">
                 by
@@ -44,8 +45,18 @@
             </div>
         </div>
         <div class="toplink">
-            <a href="jwt101.html" class="btn btn-alt">JWT 101</a>
-            <a href="jjwtdocs.html" class="btn btn-alt">Docs</a>
+            <div class="dropdown">
+                <p class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></p>
+                <ul class="dropdown-menu">
+                    <li><a href="jjwtdocs.html">JJWT Docs</a></li>
+                    <li><a href="jwt101.html">JWT101</a></li>
+                    <li role="separator" class="divider"></li>
+                    <p class="dropdownlisttext"> More From Stormpath</p>
+                    <li><a href="https://www.jsonwebtoken.io/">JSONWebToken.io</a></li>
+                    <li><a href="https://www.jwtinspector.io/">JWT Inspector</a></li>
+                    <li><a href="#">LazyCerts</a></li>
+                </ul>
+            </div>
         </div>
 
         <div class="share">
@@ -53,6 +64,9 @@
                 <i class="fa fa-twitter" aria-hidden="true"></i>
                 Share on Twitter
             </a>
+            <div class="buttons">
+                <a class="github-button" href="https://github.com/jwtk/jjwt" data-count-href="/jwtk/jjwt/stargazers" data-count-api="/repos/jwtk/jjwt#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star jwtk/jjwt on GitHub">Stars</a>
+            </div>
         </div>
 
         <h1>Open Source JWTs For Any Java App</h1>
