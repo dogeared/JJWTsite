@@ -2,9 +2,10 @@ $(document).ready(function () {
     var jwtEncodedTextArea = document.getElementById('jwt-encoded');
     jwtEncoded = CodeMirror.fromTextArea(jwtEncodedTextArea, {
         mode: 'application/json',
-        lineWrapping: true
+        lineWrapping: true,
+        readOnly: true
     });
-    jwtEncoded.getDoc().setValue("eyJhbGciOiJIUzI1NiJ9.eyJjdXN0b20iOiJteUN1c3RvbSIsInN1YiI6Ik1FIn0.-zjvjy84KOywU4yUS5un1V-5tkBtaMsqRJrmTc3xR5w");
+    jwtEncoded.getDoc().setValue("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNRSIsImN1c3RvbSI6Im15Q3VzdG9tIn0.h7w99JgiYH2huiFCxgRemjrl99-TvdXTQU3UHdSLfxg");
     jwtEncoded.setSize(430, 250);
 
     var jwtHeaderTextArea = document.getElementById('jwt-header');
@@ -20,7 +21,8 @@ $(document).ready(function () {
     jwtPayload = CodeMirror.fromTextArea(jwtPayloadTextArea, {
         mode: 'application/json',
         lineNumbers: true,
-        matchBrackets: true
+        matchBrackets: true,
+        autofocus: true
     });
     jwtPayload.getDoc().setValue('{\n\t"sub": "ME",\n\t"custom": "myCustom"\n}');
     jwtPayload.setSize(430, 120);
@@ -28,7 +30,8 @@ $(document).ready(function () {
     var jwtBuilderTextArea = document.getElementById('jwt-builder');
     jwtBuilder = CodeMirror.fromTextArea(jwtBuilderTextArea, {
         lineNumbers: true,
-        matchBrackets: true
+        matchBrackets: true,
+        readOnly: true
     });
     jwtBuilder.getDoc().setValue('String jwtStr = Jwts.builder()\n\t.setSubject("ME")\n\t.claim("custom", "myCustom")\n\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\t"secret".getBytes("UTF-8")\n\t)\n\t.compact();');
     jwtBuilder.setSize(430, 250);
@@ -36,7 +39,8 @@ $(document).ready(function () {
     var jwtParserTextArea = document.getElementById('jwt-parser');
     jwtParser = CodeMirror.fromTextArea(jwtParserTextArea, {
         lineNumbers: true,
-        matchBrackets: true
+        matchBrackets: true,
+        readOnly: true
     });
     jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.requireSubject("ME")\n\t.require("custom", "myCustom")\n\t.setSigningKey(\n\t\t"secret".getBytes("UTF-8")\n\t)\n\t.parse(jwtStr);');
     jwtParser.setSize(430, 250);
@@ -47,6 +51,11 @@ $(document).ready(function () {
     });
 
     jwtPayload.on('change', function () {
+        // need to update jwtBuilder, jwtParser and jwt sections
+        buildJavaJWTBuilderCode();
+    });
+
+    jwtHeader.on('change', function () {
         // need to update jwtBuilder, jwtParser and jwt sections
         buildJavaJWTBuilderCode();
     });
@@ -63,6 +72,33 @@ $(document).ready(function () {
     $.blockUI.defaults.css.width = '70%';
 });
 
+function validateAlgorithm(header) {
+    if (!header.alg) {
+        throw "Missing Algorithm, Son!";
+    }
+    
+    var validAlgorithms = [
+        "HS256",
+        "HS384",
+        "HS512",
+        "RS256",
+        "RS384",
+        "RS512",
+        "ES256",
+        "ES384",
+        "ES512",
+        "PS256",
+        "PS384",
+        "PS512"
+    ];
+
+    if (!_.contains(validAlgorithms, header.alg)) {
+        throw "Invalid Algorithm, Son!";
+    } else if (!header.alg.startsWith("HS")) {
+        throw "Valid algorithm, but this demo doesn't support it, Son!";
+    }
+}
+
 function parseJWTJSON() {
     var headerStr = jwtHeader.getValue();
     var payloadStr = jwtPayload.getValue();
@@ -76,6 +112,13 @@ function parseJWTJSON() {
     } catch (err) {
         // parse error is ok. user might just be in the middle of editing
         blockJava('Fix yer JSON, Son!');
+        return;
+    }
+    
+    try {
+        validateAlgorithm(header);
+    } catch (err) {
+        blockJava(err);
         return;
     }
 
@@ -109,7 +152,7 @@ function buildJavaJWTBuilderCode() {
 
     var javaPreStr = 'String jwtStr = Jwts.builder()\n';
     var javaMiddle = '';
-    var javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\t"' +
+    var javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.' + jwtParts.header.alg + ',\n\t\t"' +
         jwtParts.secret + '".getBytes("UTF-8")\n\t)\n\t.compact();';
 
     _.each(jwtParts.payload, function (val, key) {
@@ -163,8 +206,13 @@ function isBlocked(elemId) {
     return data["blockUI.isBlocked"] == 1;
 }
 
+function msgChanged(elemId, msg) {
+    // hack!
+    return $(elemId + "> .blockMsg > h4").text() !== msg;
+}
+
 function blockIfNotBlocked(elemId, msg) {
-    if (!isBlocked(elemId)) {
+    if (!isBlocked(elemId) || msgChanged(elemId, msg)) {
         $(elemId).block({
             message: '<h4>' + msg + '</h4>',
             css: { border: '3px solid #a00' }

@@ -18,9 +18,12 @@ public class JJWTController {
     @RequestMapping("/buildJWT")
     public @ResponseBody JWTBuilderResponse buildJWT(@RequestBody JWTPartsRequest request) throws Exception {
 
+        SignatureAlgorithm alg = SignatureAlgorithm.forName((String) request.getHeader().get("alg"));
+
         String jwt = Jwts.builder()
+            .setHeader(request.getHeader())
             .setClaims(request.getPayload())
-            .signWith(SignatureAlgorithm.HS256, request.getSecret().getBytes("UTF-8"))
+            .signWith(alg, request.getSecret().getBytes("UTF-8"))
             .compact();
 
         JWTBuilderResponse response = new JWTBuilderResponse();
