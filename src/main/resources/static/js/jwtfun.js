@@ -155,6 +155,12 @@ function buildJavaJWTBuilderCode() {
     var javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.' + jwtParts.header.alg + ',\n\t\t"' +
         jwtParts.secret + '".getBytes("UTF-8")\n\t)\n\t.compact();';
 
+    _.each(jwtParts.header, function (val, key) {
+        if (key !== 'alg') {
+            javaMiddle += '\t' + composeHeaderParam(key, val) + '\n';
+        }
+    });
+    
     _.each(jwtParts.payload, function (val, key) {
        javaMiddle += '\t' + composeClaim('set', key, val) + '\n';
     });
@@ -218,6 +224,14 @@ function blockIfNotBlocked(elemId, msg) {
             css: { border: '3px solid #a00' }
         });
     }
+}
+
+function composeHeaderParam(key, val) {
+    var type = typeof val;
+    if (type === "string") {
+        val = '"' + val + '"';
+    }
+    return '.setHeaderParam("' + key + '", ' + val + ')';
 }
 
 function composeClaim(pre, key, val) {
