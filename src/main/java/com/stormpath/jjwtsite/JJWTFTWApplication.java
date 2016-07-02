@@ -18,7 +18,7 @@ public class JJWTFTWApplication {
     @Value("#{ @environment['tomcat.ajp.port'] ?: 9090 }")
     Integer ajpPort;
 
-    @Value("#{ @environment['tomcat.ajp.enabled'] ?: false }")
+    @Value("#{ @environment['tomcat.ajp.enabled'] ?: true }")
     Boolean tomcatAjpEnabled;
 
     public static void main(String[] args) {
