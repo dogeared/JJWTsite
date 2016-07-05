@@ -21,8 +21,7 @@ $(document).ready(function () {
     jwtPayload = CodeMirror.fromTextArea(jwtPayloadTextArea, {
         mode: 'application/json',
         lineNumbers: true,
-        matchBrackets: true,
-        autofocus: true
+        matchBrackets: true
     });
     jwtPayload.getDoc().setValue('{\n\t"sub": "ME",\n\t"custom": "myCustom"\n}');
     jwtPayload.setSize(430, 120);

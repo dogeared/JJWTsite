@@ -1,88 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>JJWT - JSON Web Token for Java and Android</title>
-    <meta charset="utf-8"/>
-    <meta name="description"
-          content="JJWT is an open source json web token library that enables any java application to create and verify access and refresh tokens. Learn more and see it in action here."/>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, maximum-scale=1, width=device-width"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-
-    <meta property="og:title" content="JJWT - JSON Web Token for Java and Android"/>
-    <meta property="og:description"
-          content="JJWT is an open source json web token library that enables any java application to create and verify access and refresh tokens. Learn more and see it in action here."/>
-    <meta property="og:image" content=""/>
-    <meta property="og:image:secure_url"
-          content=""/>
-
-    <link rel="shortcut icon" type="image/png" href="img/icons/icon-32.png"/>
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,100,300,700"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,500"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Francois+One"/>
-
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="/css/jwt_style.css"/>
-    <link rel="stylesheet" href="/css/codemirror.css"/>
-
-    <link rel="stylesheet" href="/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="/css/styles2.css"/>
+    <th:block th:include="fragments/head :: head"/>
 </head>
 
 <body>
 <header>
-    <div class="container">
-        <div class="logo">
-            <div class="icon">
-                <a href="/"><img src="/images/JJWTLogo.png"/></a>
-                <a href="/" class="text">JSON Web Tokens for Java and Android</a>
-            </div>
-            <div class="credits">
-                by
-                <a href="https://stormpath.com/" target="_blank"><img src="/images/stormpath-logo-white.png"/></a>
-            </div>
-        </div>
-        <div class="toplink">
-            <div class="dropdown">
-                <p class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></p>
-                <ul class="dropdown-menu">
-                    <li><a href="jjwtdocs.html">JJWT Docs</a></li>
-                    <li><a href="jwt101.html">JWT101</a></li>
-                    <li role="separator" class="divider"></li>
-                    <p class="dropdownlisttext"> More From Stormpath</p>
-                    <li><a href="https://www.jsonwebtoken.io/">JSONWebToken.io</a></li>
-                    <li><a href="https://www.jwtinspector.io/">JWT Inspector</a></li>
-                    <li><a href="#">LazyCerts</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="share">
-            <a href="https://twitter.com/intent/tweet?text=JJWT%3A+Open+Source+JWTs+for+Java+And+Android+Apps.+Check+it+out%3A+https%3A%2F%2Fgithub.com%2Fjwtk%2Fjjwt" target="_blank" rel="nofollow" class="btn btn-alt">
-                <i class="fa fa-twitter" aria-hidden="true"></i>
-                Share on Twitter
-            </a>
-            <div class="buttons">
-                <a class="github-button" href="https://github.com/jwtk/jjwt" data-count-href="/jwtk/jjwt/stargazers" data-count-api="/repos/jwtk/jjwt#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star jwtk/jjwt on GitHub">Stars</a>
-            </div>
-        </div>
-
-        <h1>Open Source JWTs For Any Java App</h1>
-
-        <p class="description">
-            JJWT is the easiest library for creating and verifying JSON Web Tokens (JWTs) on the JVM.<br />
-            Just drop JJWT into any Java application. Check it out in action!
-        </p>
-
-        <p class="buttons">
-            <a href="https://github.com/jwtk/jjwt" target="_blank" rel="nofollow" class="btn btn-alt">
-                <i class="fa fa-github" aria-hidden="true"></i>
-                View on GitHub
-            </a>
-        </p>
-    </div>
+    <div th:replace="fragments/header :: header"/>
 </header>
 <section id="section-1" class="section-bg">
     <h2>Check Out JJWT In Action!</h2>
@@ -128,20 +52,7 @@
     </div>
 </section>
 <footer>
-    <div class="container">
-        <div class="copyright">
-            &copy; 2016 Stormpath
-        </div>
-        <div class="social">
-            <a href="https://twitter.com/gostormpath" target="_blank" rel="nofollow"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-            <a href="https://github.com/jwtk/jjwt" target="_blank" rel="nofollow"><i class="fa fa-github-alt" aria-hidden="true"></i></a>
-        </div>
-        <div class="love">
-            <a href="https://stormpath.com" target="_blank">
-                <span>Made with</span><i class="fa fa-heart heart" aria-hidden="true"></i><span>by Stormpath</span>
-            </a>
-        </div>
-    </div>
+    <div th:replace="fragments/footer :: footer"/>
 </footer>
 
 <script type="text/javascript" src="/js/jquery-2.2.4.js"></script>
