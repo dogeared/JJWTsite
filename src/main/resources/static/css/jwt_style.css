@@ -3,7 +3,7 @@ body {
 }
 .box {
     padding: 10px;
-    height: 350px;
+    height: 375px;
 }
 .jwt-common {
     margin-bottom: 10px;
@@ -44,4 +44,12 @@ body {
 }
 .dn {
     display: none;
+}
+.jwt-wrap {
+    width:480px;
+    word-wrap:break-word;
+    display:inline-block;
+}
+a.nounderline:focus, a.nounderline:hover {
+    text-decoration: none;
 }

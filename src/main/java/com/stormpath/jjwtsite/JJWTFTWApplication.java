@@ -30,7 +30,7 @@ public class JJWTFTWApplication {
 
         TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
         if (tomcatAjpEnabled) {
-            log.info("Starting AJP...");
+            log.info("Starting AJP on port: " + ajpPort);
 
             Connector ajpConnector = new Connector("AJP/1.3");
             ajpConnector.setProtocol("AJP/1.3");

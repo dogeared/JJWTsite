@@ -5,7 +5,6 @@ $(document).ready(function () {
         lineWrapping: true,
         readOnly: true
     });
-    jwtEncoded.getDoc().setValue("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNRSIsImN1c3RvbSI6Im15Q3VzdG9tIn0.h7w99JgiYH2huiFCxgRemjrl99-TvdXTQU3UHdSLfxg");
     jwtEncoded.setSize(430, 250);
 
     var jwtHeaderTextArea = document.getElementById('jwt-header');
@@ -32,7 +31,6 @@ $(document).ready(function () {
         matchBrackets: true,
         readOnly: true
     });
-    jwtBuilder.getDoc().setValue('String jwtStr = Jwts.builder()\n\t.setSubject("ME")\n\t.claim("custom", "myCustom")\n\t.signWith(\n\t\tSignatureAlgorithm.HS256,\n\t\t"secret".getBytes("UTF-8")\n\t)\n\t.compact();');
     jwtBuilder.setSize(430, 250);
 
     var jwtParserTextArea = document.getElementById('jwt-parser');
@@ -41,12 +39,14 @@ $(document).ready(function () {
         matchBrackets: true,
         readOnly: true
     });
-    jwtParser.getDoc().setValue('Jwt jwt = Jwts.parser()\n\t.requireSubject("ME")\n\t.require("custom", "myCustom")\n\t.setSigningKey(\n\t\t"secret".getBytes("UTF-8")\n\t)\n\t.parse(jwtStr);');
     jwtParser.setSize(430, 250);
 
     jwtHeader.on('change', function () {
         // need to update jwtBuilder, jwtParser and jwt sections
-        buildJavaJWTBuilderCode();
+        generateSecureKey(function () {
+            // don't want to build the JWT until we have a secret
+            buildJavaJWTBuilderCode();
+        })
     });
 
     jwtPayload.on('change', function () {
@@ -59,49 +59,67 @@ $(document).ready(function () {
         buildJavaJWTBuilderCode();
     });
 
-    $('#secret').keyup(function () {
-        // need to update jwtBuilder, jwtParser and jwt sections
-        buildJavaJWTBuilderCode();
-    });
-
     $('#require_claims').click(function () {
         buildJavaJWTBuilderCode();
     });
 
     $.blockUI.defaults.css.width = '70%';
+
+    $('#gen-secure-key').click(function () {
+        generateSecureKey(function () {
+            // don't want to build the JWT until we have a secret
+            buildJavaJWTBuilderCode();
+        });
+    });
+
+    generateSecureKey(function () {
+        // don't want to build the JWT until we have a secret
+        buildJavaJWTBuilderCode();
+    });
 });
 
-function validateAlgorithm(header) {
-    if (!header.alg) {
-        throw "Missing Algorithm, Son!";
-    }
-    
-    var validAlgorithms = [
-        "HS256",
-        "HS384",
-        "HS512",
-        "RS256",
-        "RS384",
-        "RS512",
-        "ES256",
-        "ES384",
-        "ES512",
-        "PS256",
-        "PS384",
-        "PS512"
-    ];
+function buildJavaJWTBuilderCode() {
+    var jwtParts = parseJWTJSON();
+    if (!jwtParts) { return; }
 
-    if (!_.contains(validAlgorithms, header.alg)) {
-        throw "Invalid Algorithm, Son!";
-    } else if (!header.alg.startsWith("HS")) {
-        throw "Valid algorithm, but this demo doesn't support it, Son!";
+    doBuildJWT(jwtParts);
+
+    var javaPreStr = 'String jwtStr = Jwts.builder()\n';
+    var javaMiddle = '';
+    javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.' + jwtParts.header.alg + ',\n\t\t' +
+        '\/\/ This generated signing key is the proper length for the ' + jwtParts.header.alg + ' algorithm.\n\t\t' +
+        '"' + jwtParts.secret + '".getBytes("UTF-8")\n\t)\n\t.compact();';
+
+    _.each(jwtParts.header, function (val, key) {
+        if (key !== 'alg') {
+            javaMiddle += '\t' + composeHeaderParam(key, val) + '\n';
+        }
+    });
+    
+    _.each(jwtParts.payload, function (val, key) {
+       javaMiddle += '\t' + composeClaim('set', key, val) + '\n';
+    });
+
+    jwtBuilder.setValue(javaPreStr + javaMiddle + javaPostStr);
+
+    javaPreStr = 'Jwt jwt = Jwts.parser()\n';
+    javaMiddle = '';
+    javaPostStr = '\t.setSigningKey(\n\t\t"' + jwtParts.secret + '".getBytes("UTF-8")\n\t)\n\t.parse(jwtStr);';
+
+    if ($('#require_claims').prop("checked") == true) {
+        _.each(jwtParts.payload, function (val, key) {
+            javaMiddle += '\t' + composeClaim('require', key, val) + '\n';
+        });
     }
+
+    jwtParser.setValue(javaPreStr + javaMiddle + javaPostStr);
 }
 
 function parseJWTJSON() {
     var headerStr = jwtHeader.getValue();
     var payloadStr = jwtPayload.getValue();
-    var secret = $('#secret').val();
+    //var secret = $('#secret').val();
+    var secret = $('#secure-key').text();
 
     // lets make some json
     var header = {};
@@ -113,7 +131,7 @@ function parseJWTJSON() {
         blockJava('Fix yer JSON, Son!');
         return;
     }
-    
+
     try {
         validateAlgorithm(header);
     } catch (err) {
@@ -143,44 +161,36 @@ function parseJWTJSON() {
     }
 }
 
-function buildJavaJWTBuilderCode() {
-    var jwtParts = parseJWTJSON();
-    if (!jwtParts) { return; }
+function generateSecureKey(func) {
+    var headerStr = jwtHeader.getValue();
+    var header = JSON.parse(headerStr);
 
-    doBuildJWT(jwtParts);
-
-    var javaPreStr = 'String jwtStr = Jwts.builder()\n';
-    var javaMiddle = '';
-    var javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.' + jwtParts.header.alg + ',\n\t\t"' +
-        jwtParts.secret + '".getBytes("UTF-8")\n\t)\n\t.compact();';
-
-    _.each(jwtParts.header, function (val, key) {
-        if (key !== 'alg') {
-            javaMiddle += '\t' + composeHeaderParam(key, val) + '\n';
-        }
-    });
-    
-    _.each(jwtParts.payload, function (val, key) {
-       javaMiddle += '\t' + composeClaim('set', key, val) + '\n';
-    });
-
-    jwtBuilder.setValue(javaPreStr + javaMiddle + javaPostStr);
-
-    javaPreStr = 'Jwt jwt = Jwts.parser()\n';
-    javaMiddle = '';
-    javaPostStr = '\t.setSigningKey(\n\t\t"' + jwtParts.secret + '".getBytes("UTF-8")\n\t)\n\t.parse(jwtStr);';
-
-    if ($('#require_claims').prop("checked") == true) {
-        _.each(jwtParts.payload, function (val, key) {
-            javaMiddle += '\t' + composeClaim('require', key, val) + '\n';
-        });
+    try {
+        validateAlgorithm(header);
+    } catch (err) {
+        blockJava(err);
+        return;
     }
 
-    jwtParser.setValue(javaPreStr + javaMiddle + javaPostStr);
+    $.ajax({
+        url: "getSecureKey",
+        method: "POST",
+        data: JSON.stringify({
+            header: header
+        }),
+        dataType: 'json',
+        contentType: "application/json",
+        success: function (response, status, jqXHR) {
+            $('#secure-key').text(response.secureKey);
+            func();
+        },
+        error: function (jqXHR, textStatus, errorThrown){
+            //Do something
+        }
+    });
 }
 
 function doBuildJWT(jwtParts) {
-
     $.ajax({
         url: "buildJWT",
         method: "POST",
@@ -194,6 +204,33 @@ function doBuildJWT(jwtParts) {
             //Do something
         }
     });
+}
+
+function validateAlgorithm(header) {
+    if (!header.alg) {
+        throw "Missing Algorithm, Son!";
+    }
+
+    var validAlgorithms = [
+        "HS256",
+        "HS384",
+        "HS512",
+        "RS256",
+        "RS384",
+        "RS512",
+        "ES256",
+        "ES384",
+        "ES512",
+        "PS256",
+        "PS384",
+        "PS512"
+    ];
+
+    if (!_.contains(validAlgorithms, header.alg)) {
+        throw "Invalid Algorithm, Son!";
+    } else if (!header.alg.startsWith("HS")) {
+        throw "Valid algorithm, but this demo doesn't support it, Son!<p/>Use: HS256, HS384 or HS512";
+    }
 }
 
 function unblockJava() {
