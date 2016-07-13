@@ -26,7 +26,7 @@ public class JJWTController {
         String jwt = Jwts.builder()
             .setHeader(request.getHeader())
             .setClaims(request.getPayload())
-            .signWith(alg, request.getSecret().getBytes("UTF-8"))
+            .signWith(alg, TextCodec.BASE64.decode(request.getSecret()))
             .compact();
 
         JWTBuilderResponse response = new JWTBuilderResponse();
