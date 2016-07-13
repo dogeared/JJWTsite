@@ -87,8 +87,11 @@ function buildJavaJWTBuilderCode() {
     var javaPreStr = 'String jwtStr = Jwts.builder()\n';
     var javaMiddle = '';
     javaPostStr = '\t.signWith(\n\t\tSignatureAlgorithm.' + jwtParts.header.alg + ',\n\t\t' +
-        '\/\/ This generated signing key is the proper length for the ' + jwtParts.header.alg + ' algorithm.\n\t\t' +
-        'TextCodec.BASE64.decode(\n\t\t\t"' + jwtParts.secret + '"\n\t\t)\n\t)\n\t.compact();';
+        'TextCodec.BASE64.decode(\n\t\t\t' +
+        '\/\/ This generated signing key is\n\t\t\t' +
+        '\/\/ the proper length for the\n\t\t\t' +
+        '\/\/ ' + jwtParts.header.alg + ' algorithm.\n\t\t\t' +
+        '"' + jwtParts.secret + '"\n\t\t)\n\t)\n\t.compact();';
 
     _.each(jwtParts.header, function (val, key) {
         if (key !== 'alg') {
@@ -102,9 +105,9 @@ function buildJavaJWTBuilderCode() {
 
     jwtBuilder.setValue(javaPreStr + javaMiddle + javaPostStr);
 
-    javaPreStr = 'Jwt jwt = Jwts.parser()\n';
+    javaPreStr = 'Jws<Claims> jws = Jwts.parser()\n';
     javaMiddle = '';
-    javaPostStr = '\t.setSigningKey(\n\t\tTextCodec.BASE64.decode(\n\t\t\t"' + jwtParts.secret + '"\n\t\t)\n\t)\n\t.parse(jwtStr);';
+    javaPostStr = '\t.setSigningKey(\n\t\tTextCodec.BASE64.decode(\n\t\t\t"' + jwtParts.secret + '"\n\t\t)\n\t)\n\t.parseClaimsJws(jwtStr);';
 
     if ($('#require_claims').prop("checked") == true) {
         _.each(jwtParts.payload, function (val, key) {
